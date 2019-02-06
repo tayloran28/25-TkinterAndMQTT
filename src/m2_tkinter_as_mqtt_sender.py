@@ -51,23 +51,19 @@ def main():
 
     left_button = ttk.Button(main_frame, text="Left")
     left_button.grid(row=4, column=0)
-    left_button['command'] = lambda: print("Left button")
-    root.bind('<Left>', lambda event: print("Left key"))
+    left_button['command'] = lambda: (left(left_speed_entry, right_speed_entry, mqtt_client))
 
     stop_button = ttk.Button(main_frame, text="Stop")
     stop_button.grid(row=4, column=1)
     stop_button['command'] = lambda: (stop(mqtt_client))
 
-
     right_button = ttk.Button(main_frame, text="Right")
     right_button.grid(row=4, column=2)
-    right_button['command'] = lambda: print("Right button")
-    root.bind('<Right>', lambda event: print("Right key"))
+    right_button['command'] = lambda: (right(left_speed_entry, right_speed_entry, mqtt_client))
 
     back_button = ttk.Button(main_frame, text="Back")
     back_button.grid(row=5, column=1)
     back_button['command'] = lambda: (back(left_speed_entry, right_speed_entry, mqtt_client))
-
 
     up_button = ttk.Button(main_frame, text="Up")
     up_button.grid(row=6, column=0)
@@ -97,11 +93,27 @@ def forward(entry1, entry2, mqtt_client):
     r = entry2.get()
     mqtt_client.send_message("forward", [l, r])
 
+
+def left(entry1, entry2, mqtt_client):
+    print()
+    l = entry1.get()
+    r = entry2.get() * 0.5
+    mqtt_client.send_message("forward", [l, r])
+
+
+def right(entry1, entry2, mqtt_client):
+    print()
+    l = entry1.get() * 0.5
+    r = entry2.get()
+    mqtt_client.send_message("forward", [l, r])
+
+
 def back(entry1, entry2, mqtt_client):
     print()
     l = entry1.get() * -1
     r = entry2.get() * -1
     mqtt_client.send_message("back", [l, r])
+
 
 def stop(mqtt_client):
     mqtt_client.send_message("stop")
